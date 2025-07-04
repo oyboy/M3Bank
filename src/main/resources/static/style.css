@@ -1,0 +1,161 @@
+.error {
+    color: red;
+    margin: 10px 0;
+    font-size: 18px;
+    border: 1px;
+}
+.info {
+    color: green;
+    margin: 10px 0;
+    font-size: 14px;
+    border: 1px;
+}
+/*Колокольчик*/
+.bell {
+    cursor: pointer;
+    font-size: 24px;
+}
+.dropdown-menu {
+    width: 300px;
+    overflow: visible;
+}
+.dropdown-item {
+    padding: 10px;
+    min-height: 50px;
+}
+.dropdown-item span.small {
+    overflow: visible;
+    white-space: normal;
+    word-wrap: break-word;
+}
+.dropdown-item a:hover {
+    text-decoration: underline;
+}
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+}
+/*Kanban*/
+.task-card {
+    margin: 0;
+    padding: 10px;
+    cursor: grab;
+}
+.task-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+.kanban-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+/*Модальные окна*/
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-header {
+    padding: 2px 16px;
+    background-color: #dfce9e;
+    text-align: center;
+    color: white;
+}
+.modal-title{
+    font-size: 24px;
+    font-weight: bold;
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+.modal-footer {
+    padding: 2px 16px;
+    text-align: center;
+    background-color: #dfce9e;
+    color: white;
+}
+/*Обсуждения*/
+.comment, .author-comment {
+    border-radius: 0.25rem;
+    padding: 10px;
+    margin: 5px 0;
+}
+.commentsList {
+    display: flex;
+    flex-direction: column;
+}
+.comment {
+    background-color: #636977;
+    border: 1px solid #01342d;
+    color: ghostwhite;
+    align-self: flex-start;
+}
+.author-comment {
+    background-color: #e0f7fa;
+    border: 1px solid #009688;
+    margin-left: auto;
+    align-self: flex-end;
+}
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+.attachments {
+    margin-top: 5px;
+}
+
+.file-attachment {
+    margin-left: 10px;
+}
+
+.file-attachment a {
+    color: #007bff;
+    text-decoration: none;
+}
+textarea.form-control {
+    width: 100%;
+    min-height: 50px;
+    overflow: hidden;
+}
+#imageModal img {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90%;
+}
+/*Bootstrap*/
+.form-group {
+    margin-top: 10px;
+}
+.alert {
+    margin-top: 10px;
+}
+.btn-primary {
+    margin: 10px 0;
+}
