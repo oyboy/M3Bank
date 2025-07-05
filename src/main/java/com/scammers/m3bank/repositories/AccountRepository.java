@@ -3,6 +3,7 @@ package com.scammers.m3bank.repositories;
 import com.scammers.m3bank.components.AccountRawMapper;
 import com.scammers.m3bank.models.Account;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -15,24 +16,30 @@ public class AccountRepository {
     private final AccountRawMapper accountRawMapper;
 
     public void save(Account account) {
-        String checkQuery = "SELECT COUNT(*) FROM accounts WHERE account_uuid = ?";
-        Integer count = jdbcTemplate.queryForObject(checkQuery, Integer.class, account.getAccountUUID());
-
-        String command = "INSERT INTO accounts (account_uuid, balance, user_id, account_type, blocked) " +
-                "VALUES (?, ?, ?, ?, ?)";
-
-        if (count != null && count > 0)
-            command = "UPDATE accounts SET balance = ?, user_id = ?, account_type = ?, blocked = ? " +
-                    "WHERE account_uuid = ?";
-
-        jdbcTemplate.update(
-                command,
-                account.getBalance(),
-                account.getUserId(),
-                account.getAccountType().toString(),
-                account.isBlocked(),
-                account.getAccountUUID()
-        );
+        if (findByUuid(account.getAccountUUID()) == null) {
+            String command = "INSERT INTO accounts (account_uuid, balance, user_id, account_type, blocked) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+            jdbcTemplate.update(
+                    command,
+                    account.getAccountUUID(),
+                    account.getBalance(),
+                    account.getUserId(),
+                    account.getAccountType().toString(),
+                    account.isBlocked()
+            );
+        }
+        else{
+            String command = "UPDATE accounts SET balance = ?, user_id = ?, account_type = ?, blocked = ? " +
+                 "WHERE account_uuid = ?";
+            jdbcTemplate.update(
+                    command,
+                    account.getBalance(),
+                    account.getUserId(),
+                    account.getAccountType().toString(),
+                    account.isBlocked(),
+                    account.getAccountUUID()
+            );
+        }
     }
 
 
@@ -43,7 +50,8 @@ public class AccountRepository {
 
     public Account findByUuid(String uuid) {
         String command = "select * from accounts where account_uuid = ?";
-        return jdbcTemplate.queryForObject(command, accountRawMapper, uuid);
+        List<Account> accounts = jdbcTemplate.query(command, accountRawMapper, uuid);
+        return DataAccessUtils.singleResult(accounts);
     }
 
     public Long getUserId(String uuid) {
