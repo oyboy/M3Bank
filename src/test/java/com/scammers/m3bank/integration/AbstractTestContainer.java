@@ -1,6 +1,8 @@
 package com.scammers.m3bank.integration;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -12,6 +14,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 @Testcontainers
 public abstract class AbstractTestContainer {
@@ -33,8 +36,9 @@ public abstract class AbstractTestContainer {
     }
     @BeforeEach
     public void before() {
-        getJdbcTemplate().execute("DELETE FROM users");
         getJdbcTemplate().execute("DELETE FROM accounts");
+        getJdbcTemplate().execute("DELETE FROM users");
+        getJdbcTemplate().execute("DELETE FROM transaction_logs");
     }
 
     @DynamicPropertySource

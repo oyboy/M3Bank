@@ -16,7 +16,7 @@ public class TransactionRepository {
     private final TransactionRawMapper transactionRawMapper;
 
     public void save(Transaction transaction) {
-        String command = "INSERT INTO transaction_logs (transaction_type, amount, timestamp, sourceAccountId, targetAccountId)"
+        String command = "INSERT INTO transaction_logs (transaction_type, amount, timestamp, source_account_id, target_account_id)"
                 + " VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(command,
                 transaction.getType().toString(),
@@ -34,9 +34,9 @@ public class TransactionRepository {
     }
 
     public List<Transaction> getTransactionsByUserId(long userId) {
-        String sql = "SELECT t.id AS transaction_id, t.transaction_type, t.amount, t.timestamp, t.sourceAccountId, t.targetAccountId " +
+        String sql = "SELECT t.id, t.transaction_type, t.amount, t.timestamp, t.source_account_id, t.target_account_id " +
                 "FROM transaction_logs t " +
-                "JOIN accounts a ON t.sourceAccountId = a.account_uuid " +
+                "JOIN accounts a ON t.source_account_id = a.account_uuid " +
                 "WHERE a.user_id = ?";
 
         return jdbcTemplate.query(sql, new Object[]{userId}, transactionRawMapper);

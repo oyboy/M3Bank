@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class TransactionRawMapper implements RowMapper<Transaction> {
     @Override
     public Transaction mapRow(ResultSet rs, int rowNum) throws SQLException {
-        TransactionType type = TransactionType.valueOf(rs.getString("type").toUpperCase());
+        TransactionType type = TransactionType.valueOf(rs.getString("transaction_type").toUpperCase());
         return new Transaction(
                 rs.getLong("id"),
                 type,

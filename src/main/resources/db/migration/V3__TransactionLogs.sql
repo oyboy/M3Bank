@@ -2,8 +2,8 @@ CREATE TABLE transaction_logs
 (
     id               BIGSERIAL PRIMARY KEY,
     transaction_type VARCHAR(50),
-    amount           FLOAT,
+    amount           DOUBLE PRECISION,
     timestamp        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    sourceAccountId  VARCHAR(40),
-    targetAccountId  VARCHAR(40)
+    source_account_id  VARCHAR(40),
+    target_account_id  VARCHAR(40)
 );
