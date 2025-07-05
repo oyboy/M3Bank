@@ -45,7 +45,6 @@ public class RegisterController {
         } catch (RuntimeException re) {
             model.addAttribute("userCreateError",
                     re.getMessage());
-            re.printStackTrace();
             return "registration";
         }
     }

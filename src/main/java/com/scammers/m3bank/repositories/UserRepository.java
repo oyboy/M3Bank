@@ -24,7 +24,12 @@ public class UserRepository {
     public User findByEmail(String email){
         String command = "SELECT * FROM users WHERE email = ?";
         List<User> users = jdbcTemplate.query(command, userRawMapper, email);
+        return DataAccessUtils.singleResult(users);
+    }
 
+    public User findById(Long id){
+        String command = "SELECT * FROM users WHERE id = ?";
+        List<User> users = jdbcTemplate.query(command, userRawMapper, id);
         return DataAccessUtils.singleResult(users);
     }
 }
