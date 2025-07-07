@@ -11,5 +11,7 @@
         </div>
     </div>
     <input type="hidden" id="currentUserId" value="${user.id}">
+    <input type="hidden" name="_csrf" value="${_csrf.token}">
     <script src="scripts/notifications.js"></script>
+    <script src="scripts/ws-notifications.js"></script>
 </@c.page>

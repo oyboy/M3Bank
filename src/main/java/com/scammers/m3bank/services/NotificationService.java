@@ -18,9 +18,9 @@ public class NotificationService {
     private final NotificationRepository repository;
     private final UserRepository userRepository;
 
-    public void save(Notification notification) {
+    public Notification save(Notification notification) {
         log.info("Saving notification: " + notification);
-        repository.save(notification);
+        return repository.save(notification);
     }
     public List<Notification> getNotificationsByReceiverId(Long id){
         log.info("Retrieving notifications by receiver id: " + id);
@@ -39,6 +39,10 @@ public class NotificationService {
         User user = userRepository.findById(notification.getSenderId());
         String lastInitial = user.getLastName() != null && !user.getLastName().isEmpty()
                 ? user.getLastName().substring(0, 1) : "";
-        return new NotificationRecord(notification.getMessage(), user.getFirstName() + " " + lastInitial + ".");
+        return new NotificationRecord(notification.getId(), notification.getMessage(), user.getFirstName() + " " + lastInitial + ".");
+    }
+
+    public void markAsRead(Long id) {
+        repository.markAsReceived(List.of(id));
     }
 }
