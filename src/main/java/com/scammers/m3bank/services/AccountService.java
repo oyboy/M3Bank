@@ -1,14 +1,20 @@
 package com.scammers.m3bank.services;
 
 import com.scammers.m3bank.enums.AccountType;
+import com.scammers.m3bank.enums.TransactionType;
 import com.scammers.m3bank.models.Account;
+import com.scammers.m3bank.models.Notification;
+import com.scammers.m3bank.models.Transaction;
 import com.scammers.m3bank.models.User;
 import com.scammers.m3bank.repositories.AccountRepository;
 import com.scammers.m3bank.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,23 +23,36 @@ import java.util.List;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final TransactionService transactionService;
+    private final NotificationProducer notificationProducer;
 
     public Account createAccount(Long userId, AccountType accountType, Double balance)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (userRepository.findById(userId) == null) throw new IllegalArgumentException("Пользователь не авторизован");
         if (balance < 0) throw new IllegalArgumentException("Баланс не может быть отрицательным");
 
         Account account = new Account(userId, accountType, balance);
         accountRepository.save(account);
 
+        Transaction t = Transaction.builder()
+                .type(TransactionType.DEPOSIT)
+                .amount(balance)
+                .sourceAccountId(account.getAccountUUID())
+                .timestamp(LocalDateTime.now())
+                .build();
+        transactionService.save(t);
+
         log.info("Created account " + account);
+        log.info("Created transaction " + t);
         return account;
     }
 
     public void transferMoney(User sender, String sender_uuid, String receiver_uuid, Double amount)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (userRepository.findById(sender.getId()) == null)
             throw new IllegalArgumentException("Пользователь не авторизован");
+        if (sender_uuid.equals(receiver_uuid))
+            throw new IllegalArgumentException("Нужно выбрать разные счета");
 
         Account receiverAccount = accountRepository.findByUuid(receiver_uuid);
         if (receiverAccount == null)
@@ -58,12 +77,33 @@ public class AccountService {
         accountRepository.save(senderAccount);
         accountRepository.save(receiverAccount);
 
+        Transaction t = Transaction.builder()
+                .type(TransactionType.TRANSFER)
+                .amount(amount)
+                .sourceAccountId(sender_uuid)
+                .targetAccountId(receiver_uuid)
+                .timestamp(LocalDateTime.now())
+                .build();
+        transactionService.save(t);
+
         log.info("Transferred account " + senderAccount + " to " + receiverAccount);
+        log.info("Saved " + t);
+
+        log.warn("Sending notification to receiver");
+        Notification notification = Notification.builder()
+                .message("Поступил перевод на сумму " + amount + " руб.")
+                .receiverId(receiverAccount.getUserId())
+                .senderId(senderAccount.getUserId())
+                .sentAt(LocalDateTime.now())
+                .received(false)
+                .build();
+        notificationProducer.send(notification);
     }
 
     public Account getAccountByUuid(String uuid) {
         return accountRepository.findByUuid(uuid);
     }
+
     public List<Account> getAccountsByUserId(Long userId) {
         return accountRepository.findAllByUserId(userId);
     }

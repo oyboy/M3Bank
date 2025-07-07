@@ -1,12 +1,9 @@
 package com.scammers.m3bank.integration;
 
 import com.scammers.m3bank.components.AccountRawMapper;
-import com.scammers.m3bank.components.UserRawMapper;
 import com.scammers.m3bank.enums.AccountType;
 import com.scammers.m3bank.models.Account;
-import com.scammers.m3bank.models.User;
 import com.scammers.m3bank.repositories.AccountRepository;
-import com.scammers.m3bank.repositories.UserRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,16 +16,13 @@ import java.util.List;
 public class AccountRepositoryTest extends AbstractTestContainer {
     private JdbcTemplate jdbcTemplate;
     private AccountRepository accountRepository;
-    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
         jdbcTemplate = getJdbcTemplate();
         accountRepository = new AccountRepository(jdbcTemplate, new AccountRawMapper());
-        userRepository = new UserRepository(jdbcTemplate, new UserRawMapper());
 
-        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123");
-        userRepository.save(user);
+        jdbcTemplate.update("INSERT INTO users (id, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)", 1L, "John", "Doe", "john.doe@example.com", "pass");
     }
 
     @Test

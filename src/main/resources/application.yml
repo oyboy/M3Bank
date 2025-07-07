@@ -2,6 +2,8 @@ server:
   port: 8081
 
 spring:
+  kafka:
+    bootstrap-servers: localhost:29092
   freemarker:
     expose-request-attributes: true
   datasource:
@@ -12,3 +14,8 @@ spring:
 
   flyway:
     enabled: true
+
+app:
+  kafka:
+    topic:
+      notifications: notifications

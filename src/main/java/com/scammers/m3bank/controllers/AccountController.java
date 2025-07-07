@@ -4,8 +4,11 @@ import com.scammers.m3bank.enums.AccountType;
 import com.scammers.m3bank.models.Account;
 import com.scammers.m3bank.models.User;
 import com.scammers.m3bank.services.AccountService;
+import com.scammers.m3bank.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,16 @@ import java.util.Objects;
 @SessionAttributes("sender_uuid")
 public class AccountController {
     private final AccountService accountService;
+    private final UserService userService;
+
+    @ModelAttribute(name = "user")
+    public User getUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User user) {
+            return userService.getUserById(user.getId());
+        }
+        return new User();
+    }
 
     @GetMapping
     public String profile(@AuthenticationPrincipal User user, Model model) {

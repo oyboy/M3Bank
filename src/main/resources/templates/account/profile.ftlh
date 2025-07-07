@@ -1,5 +1,6 @@
 <#import "../parts/common.ftlh" as c>
 <@c.page>
+    <#include "../parts/notification.ftlh">
     <h1>My Accounts</h1>
 
     <#if error??>
