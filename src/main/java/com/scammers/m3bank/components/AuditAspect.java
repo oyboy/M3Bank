@@ -31,7 +31,7 @@ public class AuditAspect {
         LocalDateTime timestamp = LocalDateTime.now();
 
         log.info("📝 [AUDIT] {} invoked '{}' at {}", username, action.isBlank() ? method : action, timestamp);
-        
+
         auditRepository.save(new AuditRecord(username, action, timestamp));
 
         return joinPoint.proceed();

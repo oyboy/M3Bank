@@ -1,5 +1,6 @@
 package com.scammers.m3bank.services;
 
+import com.scammers.m3bank.annotations.Auditable;
 import com.scammers.m3bank.enums.AccountType;
 import com.scammers.m3bank.enums.TransactionType;
 import com.scammers.m3bank.models.Account;
@@ -26,6 +27,7 @@ public class AccountService {
     private final TransactionService transactionService;
     private final NotificationProducer notificationProducer;
 
+    @Auditable(action = "Создание нового счёта")
     public Account createAccount(Long userId, AccountType accountType, Double balance)
             throws IllegalArgumentException {
         if (userRepository.findById(userId) == null) throw new IllegalArgumentException("Пользователь не авторизован");
@@ -33,6 +35,7 @@ public class AccountService {
 
         Account account = new Account(userId, accountType, balance);
         accountRepository.save(account);
+        log.info("Создан счёт: {}", account.getAccountUUID());
 
         Transaction t = Transaction.builder()
                 .type(TransactionType.DEPOSIT)
@@ -41,14 +44,16 @@ public class AccountService {
                 .timestamp(LocalDateTime.now())
                 .build();
         transactionService.save(t);
+        log.info("Транзакция сохранена: {} руб. → {}", balance, account.getAccountUUID());
 
-        log.info("Created account " + account);
-        log.info("Created transaction " + t);
         return account;
     }
 
+    @Auditable(action = "Перевод денежных средств")
     public void transferMoney(User sender, String sender_uuid, String receiver_uuid, Double amount)
             throws IllegalArgumentException {
+        log.info("Запрос на перевод: от {} к {}, сумма={}, инициатор={}", sender_uuid, receiver_uuid, amount, sender.getEmail());
+
         if (userRepository.findById(sender.getId()) == null)
             throw new IllegalArgumentException("Пользователь не авторизован");
         if (sender_uuid.equals(receiver_uuid))
@@ -73,6 +78,9 @@ public class AccountService {
 
         senderAccount.setBalance(senderAccount.getBalance() - amount);
         receiverAccount.setBalance(receiverAccount.getBalance() + amount);
+        log.info("Баланс обновлён: {} → {}, {} → {}",
+                sender_uuid, senderAccount.getBalance(),
+                receiver_uuid, receiverAccount.getBalance());
 
         accountRepository.save(senderAccount);
         accountRepository.save(receiverAccount);
@@ -86,10 +94,6 @@ public class AccountService {
                 .build();
         transactionService.save(t);
 
-        log.info("Transferred account " + senderAccount + " to " + receiverAccount);
-        log.info("Saved " + t);
-
-        log.warn("Sending notification to receiver");
         Notification notification = Notification.builder()
                 .message("Поступил перевод на сумму " + amount + " руб.")
                 .receiverId(receiverAccount.getUserId())
@@ -98,6 +102,7 @@ public class AccountService {
                 .received(false)
                 .build();
         notificationProducer.send(notification);
+        log.info("Уведомление отправлено получателю: userId={}", receiverAccount.getUserId());
     }
 
     public Account getAccountByUuid(String uuid) {
