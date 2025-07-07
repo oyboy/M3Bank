@@ -3,12 +3,14 @@ package com.scammers.m3bank.services;
 import com.scammers.m3bank.enums.AccountType;
 import com.scammers.m3bank.enums.TransactionType;
 import com.scammers.m3bank.models.Account;
+import com.scammers.m3bank.models.Notification;
 import com.scammers.m3bank.models.Transaction;
 import com.scammers.m3bank.models.User;
 import com.scammers.m3bank.repositories.AccountRepository;
 import com.scammers.m3bank.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -22,6 +24,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final TransactionService transactionService;
+    private final NotificationProducer notificationProducer;
 
     public Account createAccount(Long userId, AccountType accountType, Double balance)
             throws IllegalArgumentException {
@@ -85,6 +88,16 @@ public class AccountService {
 
         log.info("Transferred account " + senderAccount + " to " + receiverAccount);
         log.info("Saved " + t);
+
+        log.warn("Sending notification to receiver");
+        Notification notification = Notification.builder()
+                .message("Поступил перевод на сумму " + amount + " руб.")
+                .receiverId(receiverAccount.getUserId())
+                .senderId(senderAccount.getUserId())
+                .sentAt(LocalDateTime.now())
+                .received(false)
+                .build();
+        notificationProducer.send(notification);
     }
 
     public Account getAccountByUuid(String uuid) {
