@@ -52,11 +52,11 @@ public class AccountController {
         Account account = accountService.getAccountByUuid(account_uuid);
         if (Objects.isNull(account)) {
             model.addAttribute("error", "Account not found");
-            return "account/error";
+            return "errors/not-found";
         }
         if (!Objects.equals(account.getUserId(), user.getId())) {
             model.addAttribute("error", "You are not the owner of this account");
-            return "account/error";
+            return "errors/access-denied";
         }
         model.addAttribute("account", account);
         return "account/view";
@@ -69,11 +69,11 @@ public class AccountController {
         Account account = accountService.getAccountByUuid(account_uuid);
         if (Objects.isNull(account)) {
             model.addAttribute("error", "Account not found");
-            return "account/error";
+            return "errors/not-found";
         }
         if (!Objects.equals(account.getUserId(), user.getId())) {
             model.addAttribute("error", "You are not the owner of this account");
-            return "account/error";
+            return "errors/access-denied";
         }
         model.addAttribute("sender_uuid", account.getAccountUUID());
         return "account/transfer";
