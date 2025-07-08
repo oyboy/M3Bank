@@ -91,6 +91,7 @@ public class AccountController {
             model.addAttribute("amount", amount);
             model.addAttribute("receiver_uuid", receiver_uuid);
             model.addAttribute("currency", "RUB");
+            model.addAttribute("sender_uuid", sender_uuid);
             return "account/success";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());

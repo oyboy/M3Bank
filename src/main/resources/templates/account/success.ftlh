@@ -16,7 +16,7 @@
 
                         <div class="text-center">
                             <a href="/account" class="btn btn-light btn-lg mx-2">Go to My Accounts</a>
-                            <a href="/account/transfer" class="btn btn-dark btn-lg mx-2">Make another transfer</a>
+                            <a href="/account/transfer/${sender_uuid}" class="btn btn-dark btn-lg mx-2">Make another transfer</a>
                         </div>
                     </div>
                 </div>
