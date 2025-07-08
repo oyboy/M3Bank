@@ -112,4 +112,8 @@ public class AccountService {
     public List<Account> getAccountsByUserId(Long userId) {
         return accountRepository.findAllByUserId(userId);
     }
+
+    public void save(Account account) {
+        accountRepository.save(account);
+    }
 }

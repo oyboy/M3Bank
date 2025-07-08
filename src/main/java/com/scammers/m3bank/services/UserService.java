@@ -5,6 +5,8 @@ import com.scammers.m3bank.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -12,5 +14,9 @@ public class UserService {
 
     public User getUserById(Long user_id) {
         return userRepository.findById(user_id);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

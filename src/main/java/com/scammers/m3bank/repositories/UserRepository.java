@@ -17,17 +17,18 @@ public class UserRepository {
 
     public void save(User user) {
         if (findById(user.getId()) == null) {
-            String command = "INSERT INTO users (first_name, last_name, email, password) " +
-                    "VALUES (?, ?, ?, ?)";
+            String command = "INSERT INTO users (first_name, last_name, email, password, role) " +
+                    "VALUES (?, ?, ?, ?, ?)";
 
             jdbcTemplate.update(command,
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getPassword()
+                    user.getPassword(),
+                    user.getRole().toString()
             );
         } else {
-            String command = "UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ? " +
+            String command = "UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ?, role = ? " +
                     "WHERE id = ?";
 
             jdbcTemplate.update(command,
@@ -35,9 +36,14 @@ public class UserRepository {
                     user.getLastName(),
                     user.getEmail(),
                     user.getPassword(),
+                    user.getRole().toString(),
                     user.getId()
             );
         }
+    }
+    public List<User> findAll() {
+        String sql = "SELECT * FROM users";
+        return jdbcTemplate.query(sql, userRawMapper);
     }
 
     public User findByEmail(String email){

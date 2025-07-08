@@ -1,6 +1,7 @@
 package com.scammers.m3bank.services;
 
 import com.scammers.m3bank.annotations.Auditable;
+import com.scammers.m3bank.enums.Role;
 import com.scammers.m3bank.models.User;
 import com.scammers.m3bank.models.dto.UserCreateRequest;
 import com.scammers.m3bank.repositories.UserRepository;
@@ -25,6 +26,7 @@ public class RegistrationService {
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.ROLE_USER);
 
         userRepository.save(user);
         log.info("User {} registered successfully", user.getEmail());

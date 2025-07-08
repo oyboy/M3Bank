@@ -22,6 +22,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/registration",
                                 "/static/css/**", "/scripts/register.js",
                                 "/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
