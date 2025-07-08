@@ -45,6 +45,7 @@
                         </#if>
 
                         <a href="/account/create" class="btn btn-success">Create a New Account</a>
+                        <a href="/history" class="btn btn-secondary"><i class="fas fa-history"></i> Transaction History</a>
                     </div>
                 </div>
             </div>
