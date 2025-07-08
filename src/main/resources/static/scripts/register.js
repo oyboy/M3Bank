@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
-
         document.querySelectorAll("[id^=error-]").forEach(div => {
             div.classList.add("d-none");
             div.innerText = "";
@@ -37,7 +36,10 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const body = await response.json();
 
-                if (typeof body === "object") {
+                if (body.error) {
+                    serverError.innerText = body.error;
+                    serverError.classList.remove("d-none");
+                } else if (typeof body === "object") {
                     for (const [field, message] of Object.entries(body)) {
                         const errorDiv = document.getElementById("error-" + field);
                         if (errorDiv) {
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
                 } else {
-                    serverError.innerText = body.error || "Ошибка регистрации";
+                    serverError.innerText = "Неизвестная ошибка регистрации";
                     serverError.classList.remove("d-none");
                 }
             }
