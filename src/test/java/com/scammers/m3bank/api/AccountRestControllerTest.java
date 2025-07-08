@@ -25,29 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(AccountRestController.class)
-@AutoConfigureMockMvc
-public class AccountRestControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
+public class AccountRestControllerTest extends BaseTest {
     @MockBean
     private AccountService accountService;
-
-    @BeforeEach
-    void setupSecurityContext() {
-        User testUser = new User();
-        testUser.setId(1L);
-        testUser.setEmail("user@example.com");
-        testUser.setPassword("password");
-
-        var auth = new UsernamePasswordAuthenticationToken(testUser, null, List.of());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
-
-    @AfterEach
-    void clearContext() {
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     void testCreateAccountSuccess() throws Exception {
