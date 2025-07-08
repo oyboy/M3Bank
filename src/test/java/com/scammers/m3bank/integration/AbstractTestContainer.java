@@ -37,6 +37,7 @@ public abstract class AbstractTestContainer {
     @BeforeEach
     public void before() {
         getJdbcTemplate().execute("DELETE FROM accounts");
+        getJdbcTemplate().execute("DELETE FROM notifications");
         getJdbcTemplate().execute("DELETE FROM users");
         getJdbcTemplate().execute("DELETE FROM transaction_logs");
     }
