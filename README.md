@@ -20,7 +20,7 @@
 - БД: PostgreSQL, `JdbcTemplate`
 - Frontend: Freemarker + Bootstrap + JS
 - Миграции: Flyway
-- Тесты: JUnit, Mockito, MockMvc, TestContainers
+- Тесты: JUnit, Mockito, MockMvc, TestContainers, Allure
 
 ### Уведомления (Kafka + WebSocket)
 
@@ -37,6 +37,10 @@
 
 - Глобальный `@ControllerAdvice`
 - Единый JSON-формат ошибок: статус, сообщение, путь, время
+
+### Отчётность
+Ещё на ранних этапах был добавлен allure в зависимости проекта. Для просмотра необходимо запустить тесты и ввести в консоль `allure serve`.
+<img width="1820" height="895" alt="image" src="https://github.com/user-attachments/assets/75d7aa1b-c11b-43ac-b30b-482ea4d0f0b7" />
 
 ### Admin
 За создание админа отвественнен компонент DevUserInitializer. Полагаю, что можно было бы через configReader сделать, но в принципе и так сойдёт. Вход в панель осуществляется по пути "сервер:порт/admin".
