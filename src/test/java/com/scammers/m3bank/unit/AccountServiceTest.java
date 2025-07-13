@@ -6,6 +6,9 @@ import com.scammers.m3bank.models.User;
 import com.scammers.m3bank.repositories.AccountRepository;
 import com.scammers.m3bank.repositories.UserRepository;
 import com.scammers.m3bank.services.AccountService;
+import com.scammers.m3bank.services.NotificationProducer;
+import com.scammers.m3bank.services.NotificationService;
+import com.scammers.m3bank.services.TransactionService;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
@@ -25,6 +28,12 @@ class AccountServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private TransactionService transactionService;
+
+    @Mock
+    private NotificationProducer notificationProducer;
 
     @InjectMocks
     private AccountService accountService;

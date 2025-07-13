@@ -1,6 +1,7 @@
 package com.scammers.m3bank.integration;
 
 import com.scammers.m3bank.components.UserRawMapper;
+import com.scammers.m3bank.enums.Role;
 import com.scammers.m3bank.models.User;
 import com.scammers.m3bank.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ public class UserRepositoryTest extends AbstractTestContainer {
 
     @Test
     void saveUser() {
-        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123");
+        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123", Role.ROLE_USER);
         userRepository.save(user);
         List<User> usersAfter = jdbcTemplate.query("SELECT * FROM users WHERE email = ?", new UserRawMapper(), "john.doe@example.com");
         assertThat(usersAfter.size()).isEqualTo(1);
@@ -33,7 +34,7 @@ public class UserRepositoryTest extends AbstractTestContainer {
 
     @Test
     void findByEmail() {
-        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123");
+        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123", Role.ROLE_USER);
         userRepository.save(user);
         User foundUser = userRepository.findByEmail("john.doe@example.com");
         assertNotNull(foundUser);
@@ -48,7 +49,7 @@ public class UserRepositoryTest extends AbstractTestContainer {
 
     @Test
     void existsUserWithEmail() {
-        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123");
+        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123", Role.ROLE_USER);
         userRepository.save(user);
         boolean exists = userRepository.findByEmail("john.doe@example.com") != null;
         assertTrue(exists);
@@ -56,7 +57,7 @@ public class UserRepositoryTest extends AbstractTestContainer {
 
     @Test
     void existsUserWithId() {
-        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123");
+        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123", Role.ROLE_USER);
         userRepository.save(user);
         Long id = jdbcTemplate.queryForObject("SELECT id FROM users WHERE email = ?", Long.class, "john.doe@example.com");
         boolean exists = userRepository.findById(id) != null;
@@ -65,10 +66,10 @@ public class UserRepositoryTest extends AbstractTestContainer {
 
     @Test
     void updateUser() {
-        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123");
+        User user = new User(1L, "John", "Doe", "john.doe@example.com", "password123", Role.ROLE_USER);
         userRepository.save(user);
         Long id = jdbcTemplate.queryForObject("SELECT id FROM users WHERE email = ?", Long.class, "john.doe@example.com");
-        User updatedUser = new User(id, "John", "Doe", "john.updated@example.com", "newpassword123");
+        User updatedUser = new User(id, "John", "Doe", "john.updated@example.com", "newpassword123", Role.ROLE_USER);
         userRepository.save(updatedUser);
         User foundUser = userRepository.findById(id);
         assertNotNull(foundUser);

@@ -5,6 +5,7 @@ import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -17,20 +18,21 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 @Testcontainers
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractTestContainer {
-    @Container
-    protected static final PostgreSQLContainer<?> postgreSQLContainer =
-            new PostgreSQLContainer<>("postgres:latest")
-                    .withDatabaseName("unittestdb")
-                    .withUsername("test")
-                    .withPassword("test");
+    private static JdbcTemplate jdbcTemplate;
+    protected static final SingletonPostgresContainer POSTGRES_CONTAINER = SingletonPostgresContainer.getInstance();
+
+    static {
+        POSTGRES_CONTAINER.start();
+    }
 
     @BeforeAll
     public static void setup() {
         Flyway flyway = Flyway.configure().dataSource(
-                postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword()
+                POSTGRES_CONTAINER.getJdbcUrl(),
+                POSTGRES_CONTAINER.getUsername(),
+                POSTGRES_CONTAINER.getPassword()
         ).load();
         flyway.migrate();
     }
@@ -46,26 +48,29 @@ public abstract class AbstractTestContainer {
     private static void setProperties(DynamicPropertyRegistry registry) {
         registry.add(
                 "spring.datasource.url",
-                postgreSQLContainer::getJdbcUrl
+                POSTGRES_CONTAINER::getJdbcUrl
         );
         registry.add(
                 "spring.datasource.username",
-                postgreSQLContainer::getUsername
+                POSTGRES_CONTAINER::getUsername
         );
         registry.add(
                 "spring.datasource.password",
-                postgreSQLContainer::getPassword
+                POSTGRES_CONTAINER::getPassword
         );
     }
     protected static DataSource getDataSource() {
         return DataSourceBuilder.create()
-                .driverClassName(postgreSQLContainer.getDriverClassName())
-                .url(postgreSQLContainer.getJdbcUrl())
-                .username(postgreSQLContainer.getUsername())
-                .password(postgreSQLContainer.getPassword())
+                .driverClassName(POSTGRES_CONTAINER.getDriverClassName())
+                .url(POSTGRES_CONTAINER.getJdbcUrl())
+                .username(POSTGRES_CONTAINER.getUsername())
+                .password(POSTGRES_CONTAINER.getPassword())
                 .build();
     }
     protected static JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(getDataSource());
+        if (jdbcTemplate == null) {
+            jdbcTemplate = new JdbcTemplate(getDataSource());
+        }
+        return jdbcTemplate;
     }
 }

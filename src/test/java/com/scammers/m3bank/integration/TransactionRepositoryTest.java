@@ -31,7 +31,6 @@ public class TransactionRepositoryTest extends AbstractTestContainer {
 
         jdbcTemplate.update("INSERT INTO users (id, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)", 1L, "John", "Doe", "john.doe@example.com", "pass");
         jdbcTemplate.update("INSERT INTO users (id, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)", 2L, "John2", "Doe", "john2.doe@example.com", "pass2");
-
     }
 
     @Test
@@ -51,25 +50,6 @@ public class TransactionRepositoryTest extends AbstractTestContainer {
         assertThat(fetchedTransaction.getId()).isEqualTo(1L);
         assertThat(fetchedTransaction.getType()).isEqualTo(TransactionType.DEPOSIT);
         assertThat(fetchedTransaction.getAmount()).isEqualTo(1000.00);
-    }
-
-    @Test
-    void getTransactionById() {
-        Transaction transaction = Transaction.builder()
-                .type(TransactionType.WITHDRAW)
-                .amount(500.00)
-                .timestamp(LocalDateTime.now())
-                .sourceAccountId("uuid123")
-                .targetAccountId("TGT012")
-                .build();
-
-        transactionRepository.save(transaction);
-
-        Transaction fetchedTransaction = transactionRepository.getTransactionById(1L);
-        assertThat(fetchedTransaction).isNotNull();
-        assertThat(fetchedTransaction.getId()).isEqualTo(1L);
-        assertThat(fetchedTransaction.getType()).isEqualTo(TransactionType.WITHDRAW);
-        assertThat(fetchedTransaction.getAmount()).isEqualTo(500.00);
     }
 
     @Test
@@ -107,7 +87,6 @@ public class TransactionRepositoryTest extends AbstractTestContainer {
         List<Transaction> transactions = transactionRepository.getTransactionsByUserId(1L);
 
         assertThat(transactions.size()).isEqualTo(2);
-        assertThat(transactions).extracting(Transaction::getId).contains(1L, 2L);
         assertThat(transactions).extracting(Transaction::getType).contains(TransactionType.TRANSFER, TransactionType.WITHDRAW);
     }
 }

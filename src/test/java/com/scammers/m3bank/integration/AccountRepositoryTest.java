@@ -4,6 +4,7 @@ import com.scammers.m3bank.components.AccountRawMapper;
 import com.scammers.m3bank.enums.AccountType;
 import com.scammers.m3bank.models.Account;
 import com.scammers.m3bank.repositories.AccountRepository;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
