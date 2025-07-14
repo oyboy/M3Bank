@@ -16,7 +16,7 @@
 
 ### Архитектура и стек
 
-- Backend: Spring Boot, REST, WebSocket, Kafka
+- Backend: Spring Boot, REST, WebSocket, Kafka, Docker
 - БД: PostgreSQL, `JdbcTemplate`
 - Frontend: Freemarker + Bootstrap + JS
 - Миграции: Flyway
@@ -28,6 +28,8 @@
 - Kafka consumer сохраняет уведомление и пушит его через WebSocket
 - Клиент получает уведомление мгновенно, без опроса
 
+> [!IMPORTANT]
+> Kafka запускается из докер-контейнера, для этого в корне проекта имеется файл `compose.yaml`. 
 ### Аудит через AOP
 
 - Создана аннотация `@Auditable`, логирующая действия пользователя
